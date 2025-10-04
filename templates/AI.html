@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Interaction - Campus Career Connect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #c7ea46;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 15px;
+        }
+
+        .banner img {
+            height: 90px;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: -250px;
+            width: 250px;
+            height: calc(100% - 60px);
+            background-color: #c7ea46;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            transition: left 0.3s ease;
+            z-index: 1100;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #000;
+            color: #c7ea46;
+        }
+
+        .menu-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1200;
+            background-color: #c7ea46;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .logo.right {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background-color: transparent;
+            padding: 0;
+            border: none; /* Remove border */
+            outline: none; /* Remove focus outline */
+            cursor: pointer;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+            margin-top: 80px;
+        }
+
+        .content h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #c7ea46;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .content p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .button {
+            width: 200px;
+            padding: 15px;
+            font-size: 1.2rem;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #c7ea46;
+            color: #000;
+            transform: scale(1.05);
+        }
+
+        /* Footer Style */
+        footer {
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        footer a {
+            color: #c7ea46;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Icon Button Styles */
+        .icon-button {
+            width: 120px;
+            height: 120px;
+            background-color: #333;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            font-size: 2rem;
+            cursor: pointer;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .icon-button:hover {
+            background-color: #c7ea46;
+            color: #000;
+            transform: scale(1.1);
+        }
+
+        .icon-button i {
+            font-size: 2rem;
+        }
+
+        .icon-button span {
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- Banner -->
+    <div class="banner">
+        <img src="{{ url_for('static', filename='images/8-removebg-preview.png') }}" alt="Logo">
+        <!-- Logo on the right wrapped in a button -->
+        <button class="logo right" onclick="logout()">
+            <i class="bi bi-box-arrow-right" style="font-size: 1.5rem; color: #000;"></i> <!-- Bootstrap icon for logout -->
+        </button>
+    </div>
+
+    <!-- Menu Button -->
+    <button class="menu-btn" id="menuBtn">&#9776;</button>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <a href="{{ url_for('home2') }}">Home</a>
+        <a href="{{ url_for('student_MI') }}">Mock Interviews</a>
+        <a href="{{ url_for('student_at') }}">AptiTest</a>
+        <a href="{{ url_for('student_cc') }}">Coding Challenges</a>
+        <a href="{{ url_for('student_pd') }}">Progress Dashboard</a>
+        <a href="{{ url_for('student_ai') }}">Alumni Interaction</a>
+        <a href="{{ url_for('about') }}">About Us</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h1>Alumni Interaction</h1>
+        <p>Connect with alumni to gain insights, guidance, and networking opportunities.</p>
+
+        <div class="buttons">
+            <button class="icon-button" onclick="window.location.href='{{ url_for('student_qna') }}'">
+                <i class="bi bi-chat-left-dots"></i> <!-- Bootstrap icon for Q&A -->
+                <span>Q&A</span>
+            </button>
+            <button class="icon-button" onclick="window.location.href='{{ url_for('student_ad') }}'">
+                <i class="bi bi-person-lines-fill"></i> <!-- Bootstrap icon for Alumni Directory -->
+                <span>Alumni Directory</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2025 Campus Career Connect. All Rights Reserved.</p>
+        <p>Contact us: <a href="mailto:info@campuscareerconnect.com">info@campuscareerconnect.com</a></p>
+    </footer>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        function logout() {
+            alert('You have logged out!');
+            window.location.href = "{{ url_for('home') }}"; // Redirect to the login page
+        }
+    </script>
+</body>
+
+</html>

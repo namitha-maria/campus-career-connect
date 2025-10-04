@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Campus Career Connect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+        }
+
+        .banner {
+            background-color: #c7ea46;
+            padding: 20px;
+            text-align: center;
+            color: #000;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 100px;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #000;
+        }
+
+        .card {
+            width: 250px;
+            text-align: center;
+            background-color: #333;
+            border-radius: 15px;
+            padding: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            margin: 10px auto;
+        }
+
+        .card:hover {
+            transform: scale(1.1);
+            background-color: #c7ea46;
+        }
+
+        .icon {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 10px;
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .mock-interview { background-image: url("{{ url_for('static', filename='images/mi.png') }}"); }
+        .aptitest { background-image: url("{{ url_for('static', filename='images/at.png') }}"); }
+        .codecrack { background-image: url("{{ url_for('static', filename='images/cc.png') }}"); }
+        .progress-dashboard { background-image: url("{{ url_for('static', filename='images/pd.png') }}"); }
+        .alumni-directory { background-image: url("{{ url_for('static', filename='images/ad.png') }}"); }
+        .about-us { background-image: url("{{ url_for('static', filename='images/au.png') }}"); }
+
+        h3 {
+            font-size: 1.4rem;
+            margin-top: 10px;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="banner">
+        <img src="{{ url_for('static', filename='images/8-removebg-preview.png') }}" alt="Campus Career Connect Logo" class="logo">
+        <button class="logout-btn" onclick="logout()">
+            <i class="bi bi-box-arrow-right"></i>
+        </button>
+        <h1>Welcome to Campus Career Connect</h1>
+        <p>Your one-stop destination to unlock career opportunities and growth!</p>
+    </div>
+
+    <div class="container text-center">
+        <div class="row row-cols-1 row-cols-md-3 g-3 justify-content-center">
+            <div class="col">
+                <div class="card" onclick="window.location.href='{{ url_for('student_MI') }}'">
+                    <div class="icon mock-interview"></div>
+                    <h3>Mock Interview</h3>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" onclick="window.location.href='{{ url_for('student_at') }}'">
+                    <div class="icon aptitest"></div>
+                    <h3>AptiTest</h3>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" onclick="window.location.href='{{ url_for('student_cc') }}'">
+                    <div class="icon codecrack"></div>
+                    <h3>CodeCrack</h3>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" onclick="window.location.href='{{ url_for('student_pd') }}'">
+                    <div class="icon progress-dashboard"></div>
+                    <h3>Progress Dashboard</h3>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" onclick="window.location.href='{{ url_for('student_ai') }}'">
+                    <div class="icon alumni-directory"></div>
+                    <h3>Alumni Interaction</h3>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" onclick="window.location.href='{{ url_for('about') }}'">
+                    <div class="icon about-us"></div>
+                    <h3>About Us</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center mt-4 p-3" style="background-color: #000; color: #fff;">
+        <p>&copy; 2025 Campus Career Connect. All Rights Reserved.</p>
+        <p>Contact us: <a href="mailto:info@campuscareerconnect.com" style="color: #c7ea46;">info@campuscareerconnect.com</a></p>
+    </footer>
+
+    <script>
+        function logout() {
+            fetch("{{ url_for('student_login') }}", { method: "GET" })
+                .then(() => {
+                    alert('You have logged out!');
+                    window.location.href = "{{ url_for('home') }}";
+                });
+        }
+    </script>
+</body>
+
+</html>

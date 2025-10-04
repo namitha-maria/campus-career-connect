@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Manage Q&A</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #c7ea46;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 15px;
+        }
+
+        .banner img {
+            height: 90px;
+            cursor: pointer;
+        }
+
+        .menu-btn {
+            position: absolute;
+            left: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .logo.right {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background-color: transparent;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: -250px;
+            width: 250px;
+            height: calc(100% - 60px);
+            background-color: #c7ea46;
+            overflow: hidden;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #000;
+            color: #c7ea46;
+        }
+
+        .content {
+            flex: 1;
+            margin-top: 80px;
+            width: 90%;
+            max-width: 1000px;
+            padding: 30px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #222;
+            border-radius: 10px;
+        }
+
+        .btn-primary {
+            background-color: #c7ea46;
+            border: none;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .btn-primary:hover {
+            background-color: #a8c63e;
+        }
+
+        .qa-list {
+            margin-top: 30px;
+        }
+
+        .qa-card {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .answer-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #444;
+        }
+
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .form-control, .form-select {
+            background-color: #444;
+            color: #fff;
+            border: 1px solid #555;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: #555;
+            color: #fff;
+            border-color: #c7ea46;
+            box-shadow: 0 0 0 0.25rem rgba(199, 234, 70, 0.25);
+        }
+
+        .badge {
+            font-size: 0.8rem;
+        }
+
+        .alert-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .alert-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .status-answered {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-pending {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Banner -->
+    <div class="banner">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <img src="{{ url_for('static', filename='images/8-removebg-preview.png') }}" alt="Campus Career Connect Logo">
+        <button class="logo right" onclick="logout()">
+            <i class="bi bi-box-arrow-right" style="font-size: 1.5rem; color: #000;"></i>
+        </button>
+    </div>
+    
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('admin_at') }}">Aptitude Tests</a>
+        <a href="{{ url_for('admin_cc') }}">Coding Challenges</a>
+        <a href="{{ url_for('admin_qna') }}">Q&A Management</a>
+    </div>
+    
+    <!-- Overlay for mobile -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Q&A Management -->
+    <div class="content">
+        <h2>Q&A Management</h2>
+        
+        <!-- Search and Filter Controls -->
+        <div class="search-box">
+            <div class="input-group mb-3">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search questions...">
+                <button class="btn btn-primary" type="button" id="searchBtn">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+            
+            <div class="filter-controls">
+                <select id="statusFilter" class="form-select">
+                    <option value="all">All Statuses</option>
+                    <option value="answered">Answered</option>
+                    <option value="pending">Pending</option>
+                </select>
+                
+                <select id="dateFilter" class="form-select">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Q&A List -->
+        <div class="qa-list">
+            <div id="qaListContainer">
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary"></div>
+                    <p class="mt-2">Loading Q&A...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Campus Career Connect. All Rights Reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle sidebar
+        document.getElementById('menuBtn').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        });
+
+        // Close sidebar when clicking on overlay
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        });
+
+        function logout() {
+            alert('You have logged out!');
+            window.location.href = '/logout';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchQAs();
+            
+            // Search functionality
+            document.getElementById('searchBtn').addEventListener('click', fetchQAs);
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    fetchQAs();
+                }
+            });
+            
+            // Filter functionality
+            document.getElementById('statusFilter').addEventListener('change', fetchQAs);
+            document.getElementById('dateFilter').addEventListener('change', fetchQAs);
+        });
+
+        function fetchQAs() {
+            const qaListContainer = document.getElementById('qaListContainer');
+            qaListContainer.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary"></div><p class="mt-2">Loading Q&A...</p></div>';
+            
+            const searchQuery = document.getElementById('searchInput').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+            
+            let url = '/admin/get_qnas?';
+            if (searchQuery) url += `search=${encodeURIComponent(searchQuery)}&`;
+            if (statusFilter !== 'all') url += `status=${statusFilter}&`;
+            url += `sort=${dateFilter}`;
+            
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network error');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.length === 0) {
+                        qaListContainer.innerHTML = '<div class="text-center py-4 text-muted">No Q&A found matching your criteria</div>';
+                        return;
+                    }
+                    
+                    qaListContainer.innerHTML = '';
+                    data.forEach(qa => {
+                        const qaElement = document.createElement('div');
+                        qaElement.className = 'qa-card mb-3';
+                        
+                        const statusClass = qa.answer_text ? 'status-answered' : 'status-pending';
+                        const statusText = qa.answer_text ? 'Answered' : 'Pending';
+                        
+                        qaElement.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h5>Question #${qa.id}</h5>
+                                        <span class="status-badge ${statusClass}">${statusText}</span>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <p><strong>Student:</strong> ${qa.student_name}</p>
+                                        <p><strong>Question:</strong> ${qa.question_text}</p>
+                                        <p><small class="text-muted">Posted on: ${new Date(qa.created_at).toLocaleString()}</small></p>
+                                    </div>
+                                    
+                                    ${qa.answer_text ? `
+                                    <div class="answer-section">
+                                        <p><strong>Alumni:</strong> ${qa.alumni_name || 'Unknown'}</p>
+                                        <p><strong>Answer:</strong> ${qa.answer_text}</p>
+                                        <p><small class="text-muted">Answered on: ${new Date(qa.answer_date).toLocaleString()}</small></p>
+                                    </div>
+                                    ` : ''}
+                                </div>
+                                
+                                <div class="ms-3 d-flex flex-column gap-2">
+                                    <button class="btn btn-danger btn-sm delete-question-btn" data-qa-id="${qa.id}">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                    ${qa.answer_text ? `
+                                    <button class="btn btn-warning btn-sm delete-answer-btn" data-qa-id="${qa.id}">
+                                        <i class="bi bi-trash"></i> Delete Answer
+                                    </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+                        
+                        qaListContainer.appendChild(qaElement);
+                    });
+
+                    // Add event listeners to delete buttons
+                    document.querySelectorAll('.delete-question-btn').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const qaId = this.getAttribute('data-qa-id');
+                            if (confirm('Are you sure you want to delete this entire Q&A entry?')) {
+                                deleteQA(qaId, 'question');
+                            }
+                        });
+                    });
+
+                    document.querySelectorAll('.delete-answer-btn').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const qaId = this.getAttribute('data-qa-id');
+                            if (confirm('Are you sure you want to delete just the answer to this question?')) {
+                                deleteQA(qaId, 'answer');
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    qaListContainer.innerHTML = `<div class="alert alert-danger">Error loading Q&A: ${error.message}</div>`;
+                });
+        }
+
+        function deleteQA(qaId, type) {
+            const buttons = document.querySelectorAll(`[data-qa-id="${qaId}"]`);
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+            });
+            
+            fetch('/admin/delete_qa', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `qa_id=${qaId}&type=${type}`
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Server error');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    showAlert(`${type === 'question' ? 'Question' : 'Answer'} deleted successfully!`, 'success');
+                    fetchQAs();
+                } else {
+                    throw new Error(data.error || 'Unknown error');
+                }
+            })
+            .catch(error => {
+                showAlert(`Failed to delete ${type}: ${error.message}`, 'danger');
+                buttons.forEach(btn => {
+                    btn.disabled = false;
+                    btn.innerHTML = type === 'question' ? '<i class="bi bi-trash"></i> Delete' : '<i class="bi bi-trash"></i> Delete Answer';
+                });
+            });
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
+            alertDiv.style.zIndex = '1000';
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

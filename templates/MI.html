@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Interview - Campus Career Connect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"> <!-- Bootstrap Icons -->
+    <style>
+        body {
+            background-color: #000;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #c7ea46;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 15px;
+        }
+
+        .banner img {
+            height: 90px;
+            cursor: pointer;
+        }
+    /* Logout Button */
+    .logo.right {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        position: absolute;
+        right: 15px; /* Keep it on the right */
+        top: 50%;
+        transform: translateY(-50%);
+    }
+        /* Sidebar Menu */
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: -200px;
+            width: 200px;
+            height: calc(100% - 60px);
+            background-color: #c7ea46;
+            overflow: hidden;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #000;
+            color: #c7ea46;
+        }
+
+        /* Menu Button */
+        .menu-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1100;
+            background-color: #c7ea46;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+            margin-top: 80px;
+        }
+
+        .content h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #c7ea46;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .content p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* Add this to the style section in both HTML files */
+.video-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(199, 234, 70, 0.5);
+}
+
+#meet {
+    width: 100%;
+    min-height: 400px;
+    background-color: #222;
+    position: relative;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* Feedback Form Styling */
+.feedback-form {
+    background-color: #222;
+    border-radius: 10px;
+    padding: 25px;
+    margin: 30px auto;
+    max-width: 600px;
+    box-shadow: 0 0 15px rgba(199, 234, 70, 0.3);
+    border: 1px solid #c7ea46;
+}
+
+.feedback-form h3 {
+    color: #c7ea46;
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+}
+
+.form-label {
+    color: #c7ea46;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-control {
+    background-color: #333;
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.form-control:focus {
+    border-color: #c7ea46;
+    box-shadow: 0 0 0 0.25rem rgba(199, 234, 70, 0.25);
+}
+
+/* Radio Button Styling */
+.rating-select {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.form-check-inline {
+    margin-right: 0;
+    flex: 1;
+    text-align: center;
+}
+
+.form-check-input {
+    background-color: #333;
+    border-color: #444;
+    cursor: pointer;
+}
+
+.form-check-input:checked {
+    background-color: #c7ea46;
+    border-color: #c7ea46;
+}
+
+.form-check-label {
+    color: #fff;
+    cursor: pointer;
+    padding-left: 5px;
+}
+
+/* Submit Button */
+.feedback-form .btn-custom {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+        .tips {
+            text-align: left;
+            margin: 30px auto;
+            max-width: 600px;
+        }
+
+        .tips ul {
+            list-style: disc;
+            padding-left: 20px;
+        }
+
+       
+
+        .form-label {
+            font-weight: bold;
+        }
+
+        .btn-custom {
+            background-color: #c7ea46;
+            color: #000;
+            font-size: 1rem;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            transition: transform 0.2s ease-in-out, background-color 0.3s;
+        }
+
+        .btn-custom:hover {
+            background-color: #000;
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        footer a {
+            color: #c7ea46;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Banner -->
+    <div class="banner">
+        <img src="{{ url_for('static', filename='images/8-removebg-preview.png') }}" alt="Logo">
+        <button class="logo right" onclick="logout()">
+            <i class="bi bi-box-arrow-right" style="font-size: 1.5rem; color: #000;"></i>
+        </button>
+    </div>
+
+    <!-- Menu Button -->
+    <button class="menu-btn" id="menuBtn">&#9776;</button>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <a href="{{ url_for('home2') }}">Home</a>
+        <a href="{{ url_for('student_MI') }}">Mock Interviews</a>
+        <a href="{{ url_for('student_at') }}">AptiTest</a>
+        <a href="{{ url_for('student_cc') }}">Coding Challenges</a>
+        <a href="{{ url_for('student_pd') }}">Progress Dashboard</a>
+        <a href="{{ url_for('student_ai') }}">Alumni Interaction</a>
+        <a href="{{ url_for('about') }}">About Us</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h1>Mock Interview</h1>
+        <p>Schedule and attend mock interviews with alumni to practice your skills!</p>
+
+
+        <!-- Video Conference Section -->
+        <div class="video-container">
+            <div id="meet"></div>
+            <div class="controls mt-3">
+                <button id="joinMeeting" class="btn btn-custom me-2" disabled>Join Meeting</button>
+                <button id="endMeeting" class="btn btn-danger" disabled>End Meeting</button>
+            </div>
+        </div>
+
+        <!-- Interview Tips Section -->
+        <div class="tips">
+            <h3>Tips for the Interview:</h3>
+            <ul>
+                <li>Dress professionally, even for virtual interviews</li>
+                <li>Test your audio and video equipment beforehand</li>
+                <li>Have your resume and notes ready</li>
+                <li>Research common interview questions for your field</li>
+                <li>Prepare questions to ask the interviewer</li>
+            </ul>
+        </div>
+
+        <!-- Feedback Form -->
+        <div class="feedback-form">
+            <h3>Interview Feedback</h3>
+            <form id="feedbackForm">
+                <div class="mb-3">
+                    <label for="meetingId" class="form-label">Meeting ID</label>
+                    <input type="text" id="meetingId" class="form-control" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="interviewType" class="form-label">Interview Type</label>
+                    <select id="interviewType" class="form-control">
+                        <option value="technical">Technical Interview</option>
+                        <option value="hr">HR Interview</option>
+                        <option value="behavioral">Behavioral Interview</option>
+                        <option value="general">General Practice</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="experience" class="form-label">How was your experience?</label>
+                    <textarea id="experience" class="form-control" rows="4" placeholder="Share your feedback"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="challenges" class="form-label">What challenges did you face?</label>
+                    <textarea id="challenges" class="form-control" rows="3" placeholder="Describe any challenges"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="selfRating" class="form-label">Rate your performance (1-5)</label>
+                    <div class="rating-select">
+                        <!-- Keep your existing rating radio buttons -->
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-custom w-100 mt-3">Submit Feedback</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2025 Campus Career Connect. All Rights Reserved.</p>
+        <p>Contact us: <a href="mailto:info@campuscareerconnect.com">info@campuscareerconnect.com</a></p>
+    </footer>
+
+    <script src="https://meet.jit.si/external_api.js"></script>
+    <script>
+        // Global variables
+        let api = null;
+        let currentMeeting = null;
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadInterviews();
+            setupEventListeners();
+        });
+
+        // Load student's scheduled interviews
+        function loadInterviews() {
+            fetch('/api/get_student_interviews')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('upcomingInterviews');
+                    
+                    if (data.interviews.length === 0) {
+                        container.innerHTML = '<div class="no-interviews">You have no scheduled interviews yet.</div>';
+                        return;
+                    }
+                    
+                    container.innerHTML = '';
+                    
+                    data.interviews.forEach(interview => {
+                        const interviewItem = document.createElement('div');
+                        interviewItem.className = 'interview-item';
+                        
+                        const interviewDate = new Date(interview.interview_date).toLocaleString();
+                        const alumniName = interview.alumni_name || 'Alumni (not assigned yet)';
+                        
+                        interviewItem.innerHTML = `
+                            <h4>${interview.interview_type} Interview</h4>
+                            <div class="interview-meta">
+                                <span><strong>Date:</strong> ${interviewDate}</span>
+                                <span><strong>With:</strong> ${alumniName}</span>
+                            </div>
+                            ${interview.meeting_id ? 
+                                `<button class="btn btn-sm btn-custom" onclick="prepareJoinMeeting('${interview.meeting_id}')">
+                                    Join Interview
+                                </button>` : 
+                                '<em>Meeting link not available yet</em>'}
+                        `;
+                        
+                        container.appendChild(interviewItem);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading interviews:', error);
+                    document.getElementById('upcomingInterviews').innerHTML = 
+                        '<div class="no-interviews">Error loading interviews. Please try again.</div>';
+                });
+        }
+
+        // Prepare to join a meeting
+        function prepareJoinMeeting(meetingId) {
+            currentMeeting = meetingId;
+            document.getElementById('meetingId').value = meetingId;
+            document.getElementById('joinMeeting').disabled = false;
+            
+            // Auto-set the interview type if available
+            fetch(`/api/get_interview_details/${meetingId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.interview_type) {
+                        document.getElementById('interviewType').value = data.interview_type;
+                    }
+                });
+        }
+
+        // Join a meeting
+        function joinMeeting() {
+            if (!currentMeeting) return;
+            
+            const options = {
+                roomName: currentMeeting,
+                width: '100%',
+                height: 500,
+                parentNode: document.getElementById('meet'),
+                configOverwrite: {
+                    startWithAudioMuted: false,
+                    startWithVideoMuted: false,
+                    prejoinPageEnabled: false
+                },
+                interfaceConfigOverwrite: {
+                    APP_NAME: 'Campus Career Connect',
+                    SHOW_JITSI_WATERMARK: false,
+                    SHOW_WATERMARK_FOR_GUESTS: false,
+                    TOOLBAR_BUTTONS: [
+                        'microphone', 'camera', 'closedcaptions', 'desktop', 
+                        'fullscreen', 'fodeviceselection', 'hangup', 
+                        'chat', 'settings', 'raisehand'
+                    ]
+                },
+                userInfo: {
+                    displayName: '{{ session.get("name", "Student") }}'
+                }
+            };
+            
+            api = new JitsiMeetExternalAPI('meet.jit.si', options);
+            
+            document.getElementById('joinMeeting').disabled = true;
+            document.getElementById('endMeeting').disabled = false;
+            
+            api.addListener('readyToClose', () => {
+                endMeeting();
+            });
+        }
+
+        // End the current meeting
+        function endMeeting() {
+            if (api) {
+                api.dispose();
+                api = null;
+            }
+            
+            document.getElementById('meet').innerHTML = '';
+            document.getElementById('joinMeeting').disabled = false;
+            document.getElementById('endMeeting').disabled = true;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('joinMeeting').addEventListener('click', joinMeeting);
+            document.getElementById('endMeeting').addEventListener('click', endMeeting);
+            
+            // Feedback form submission
+            document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const meetingId = document.getElementById('meetingId').value;
+                const interviewType = document.getElementById('interviewType').value;
+                const experience = document.getElementById('experience').value;
+                const challenges = document.getElementById('challenges').value;
+                const rating = document.querySelector('input[name="rating"]:checked')?.value || 0;
+                
+                if (!meetingId || !experience || !rating) {
+                    alert('Please complete all required fields');
+                    return;
+                }
+                
+                fetch('/api/submit_interview_feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        meeting_id: meetingId,
+                        interview_type: interviewType,
+                        experience: experience,
+                        challenges: challenges,
+                        rating: rating,
+                        user_id: {{ session.get('id')|tojson }}
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('Feedback submitted successfully!');
+                        this.reset();
+                        loadInterviews(); // Refresh the interview list
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to submit feedback');
+                });
+            });
+        }
+
+        // Menu toggle and logout functions
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        function logout() {
+            fetch("{{ url_for('logout') }}", { method: "GET" })
+                .then(() => {
+                    window.location.href = "{{ url_for('home') }}";
+                });
+        }
+    </script>
+</body>
+</html>

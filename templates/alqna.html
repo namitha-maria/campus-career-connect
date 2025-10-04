@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q&A Forum</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #c7ea46;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 15px;
+        }
+
+        .banner img {
+            height: 90px;
+            cursor: pointer;
+        }
+
+        .menu-btn {
+            position: absolute;
+            left: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .logo.right {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background-color: transparent;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .logo.right img {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: -200px;
+            width: 200px;
+            height: calc(100% - 60px);
+            background-color: #c7ea46;
+            overflow: hidden;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #000;
+            color: #c7ea46;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+            margin-top: 80px;
+            text-align: center;
+        }
+
+        .content h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #c7ea46;
+            margin-bottom: 20px;
+        }
+
+        .qa-box {
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #333;
+            border-radius: 10px;
+        }
+
+        .qa-item {
+            background-color: #222;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        .qa-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .qa-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            min-height: 100px;
+        }
+
+        .qa-form button {
+            padding: 10px;
+            background-color: #c7ea46;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .qa-form button:hover {
+            background-color: #555;
+            color: #fff;
+        }
+
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        footer a {
+            color: #c7ea46;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Banner -->
+    <div class="banner">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <img src="{{ url_for('static', filename='images/8-removebg-preview.png') }}" alt="Campus Career Connect Logo">
+        <button class="logo right" onclick="logout()">
+            <i class="bi bi-box-arrow-right" style="font-size: 1.5rem; color: #000;"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <a href="{{ url_for('home3') }}">Home</a>
+        <a href="{{ url_for('alumni_MI') }}">Mock Interview</a>
+        <a href="{{ url_for('alumni_qna') }}">Q&A</a>
+        <a href="{{ url_for('alumni_about') }}">About Us</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <h2>Answer Questions</h2>
+
+        <div class="qa-box">
+            {% for qa in qna %}
+                <div class="qa-item">
+                    <p><strong>{{ qa.student_name }}</strong> asked:</p>
+                    <p>{{ qa.question_text }}</p>
+                    <p><small>Posted on {{ qa.created_at }}</small></p>
+
+                    {% if qa.answer_text %}
+                        <div style="margin-top: 15px; border-top: 1px solid #444; padding-top: 15px;">
+                            <p><strong>{{ qa.alumni_name }}</strong> answered:</p>
+                            <p>{{ qa.answer_text }}</p>
+                            <p><small>Answered on {{ qa.answer_date }}</small></p>
+                        </div>
+                    {% else %}
+                        <form class="qa-form" action="{{ url_for('answer_question', question_id=qa.id) }}" method="post">
+                            <textarea name="answer" placeholder="Type your answer..." required></textarea>
+                            <button type="submit">Submit Answer</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2023 Campus Career Connect. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Toggle sidebar
+        document.getElementById('menuBtn').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Logout function
+        function logout() {
+            window.location.href = "{{ url_for('logout') }}";
+        }
+    </script>
+</body>
+</html>

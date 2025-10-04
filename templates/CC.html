@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Challenges</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding-top: 60px;
+        }
+        
+        .banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #c7ea46;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 15px;
+        }
+
+        .banner img {
+            height: 90px;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: -250px;
+            width: 250px;
+            height: calc(100% - 60px);
+            background-color: #c7ea46;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            transition: left 0.3s ease;
+            z-index: 1100;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #000;
+            color: #c7ea46;
+        }
+
+        .logo.right {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background-color: transparent;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .logo.right img {
+            width: 30px;
+            height: 30px;
+            object-fit: contain;
+        }
+
+        .menu-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1200;
+            background-color: #c7ea46;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #000;
+        }
+        .challenge-card {
+            background-color: #222;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .challenge-title {
+            color: #c7ea46;
+            margin-bottom: 15px;
+        }
+        
+        .code-editor {
+            width: 100%;
+            min-height: 200px;
+            background-color: #333;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            border: 1px solid #555;
+        }
+        
+        .btn-submit {
+            background-color: #c7ea46;
+            color: #000;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+        
+        .btn-submit:hover {
+            background-color: #a8c63e;
+            color: #000;
+        }
+        
+        .result-container {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .result-success {
+            background-color: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28a745;
+        }
+        
+        .result-error {
+            background-color: rgba(220, 53, 69, 0.2);
+            border: 1px solid #dc3545;
+        }
+        
+        .result-warning {
+            background-color: rgba(255, 193, 7, 0.2);
+            border: 1px solid #ffc107;
+        }
+        
+        .tab-content {
+            padding: 15px 0;
+        }
+        
+        .nav-tabs .nav-link {
+            color: #c7ea46;
+            background-color: #333;
+            border: 1px solid #444;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: #fff;
+            background-color: #444;
+            border-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <a href="{{ url_for('home2') }}">Home</a>
+        <a href="{{ url_for('student_MI') }}">Mock Interviews</a>
+        <a href="{{ url_for('student_at') }}">AptiTest</a>
+        <a href="{{ url_for('student_cc') }}">Coding Challenges</a>
+        <a href="{{ url_for('student_pd') }}">Progress Dashboard</a>
+        <a href="{{ url_for('student_ai') }}">Alumni Interaction</a>
+        <a href="{{ url_for('about') }}">About Us</a>
+    </div>
+
+    <div class="banner">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <img src="{{ url_for('static', filename='images/8-removebg-preview.png') }}" alt="Campus Career Connect Logo">
+        <button class="logo right" onclick="logout()">
+            <i class="bi bi-box-arrow-right" style="font-size: 1.5rem; color: #000;"></i>
+        </button>
+    </div>
+
+
+
+    <div class="container mt-4">
+        <h2 class="mb-4">Coding Challenges</h2>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="list-group" id="challenge-list">
+                    <!-- Challenge list will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div id="challenge-details" class="challenge-card" style="display: none;">
+                    <h3 id="challenge-title" class="challenge-title"></h3>
+                    <div id="challenge-description"></div>
+                    
+                    <div class="mt-3">
+                        <h5>Input Format:</h5>
+                        <div id="input-format" class="bg-dark p-2 rounded"></div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5>Language:</h5>
+                            </div>
+                            <div class="col-md-4">
+                                <select id="language-select" class="form-select bg-dark text-white">
+                                    <option value="python">Python</option>
+                                    <option value="java">Java</option>
+                                    <option value="cpp">C++</option>
+                                    <option value="c">C</option>
+                                    <option value="javascript">JavaScript</option>
+                                    <option value="csharp">C#</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <h5>Your Solution:</h5>
+                        <textarea id="code-editor" class="code-editor" placeholder="Write your code here..."></textarea>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <h5>Test Input:</h5>
+                        <textarea id="test-input" class="form-control bg-dark text-white" rows="3" placeholder="Enter test input..."></textarea>
+                    </div>
+                    
+                    <button id="submit-btn" class="btn btn-submit">Submit Solution</button>
+                    
+                    <div id="result-container" class="result-container">
+                        <h5>Result:</h5>
+                        
+                        <ul class="nav nav-tabs" id="resultTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="output-tab" data-bs-toggle="tab" data-bs-target="#output" type="button" role="tab">Output</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="errors-tab" data-bs-toggle="tab" data-bs-target="#errors" type="button" role="tab">Errors</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="compilation-tab" data-bs-toggle="tab" data-bs-target="#compilation" type="button" role="tab">Compilation</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="stats-tab" data-bs-toggle="tab" data-bs-target="#stats" type="button" role="tab">Stats</button>
+                            </li>
+                        </ul>
+                        
+                        <div class="tab-content" id="resultTabContent">
+                            <div class="tab-pane fade show active" id="output" role="tabpanel">
+                                <pre id="result-output" class="bg-dark p-2 rounded"></pre>
+                            </div>
+                            <div class="tab-pane fade" id="errors" role="tabpanel">
+                                <pre id="result-errors" class="bg-dark p-2 rounded"></pre>
+                            </div>
+                            <div class="tab-pane fade" id="compilation" role="tabpanel">
+                                <pre id="result-compilation" class="bg-dark p-2 rounded"></pre>
+                            </div>
+                            <div class="tab-pane fade" id="stats" role="tabpanel">
+                                <div class="bg-dark p-2 rounded">
+                                    <p><strong>Status:</strong> <span id="result-status"></span></p>
+                                    <p><strong>Execution Time:</strong> <span id="result-time"></span></p>
+                                    <p><strong>Memory Used:</strong> <span id="result-memory"></span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="no-challenge-selected" class="challenge-card">
+                    <h3 class="text-center">Select a challenge from the list</h3>
+                    <p class="text-center text-muted">Choose a coding challenge from the left to get started.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        
+        // Store challenges data
+        let challenges = [];
+        let selectedChallengeId = null;
+        
+        // Fetch available challenges when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchChallenges();
+        });
+        
+        // Fetch challenges from the server
+        function fetchChallenges() {
+            fetch('/get_challenges')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error:', data.error);
+                        return;
+                    }
+                    
+                    challenges = data.challenges;
+                    displayChallengesList();
+                })
+                .catch(error => {
+                    console.error('Error fetching challenges:', error);
+                });
+        }
+        
+        // Display challenges in the sidebar list
+        function displayChallengesList() {
+            const challengeList = document.getElementById('challenge-list');
+            challengeList.innerHTML = '';
+            
+            if (challenges.length === 0) {
+                challengeList.innerHTML = '<div class="list-group-item bg-dark text-white">No challenges available</div>';
+                return;
+            }
+            
+            challenges.forEach(challenge => {
+                const item = document.createElement('a');
+                item.href = '#';
+                item.className = 'list-group-item list-group-item-action bg-dark text-white';
+                item.innerText = challenge.title;
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    selectChallenge(challenge.id);
+                });
+                challengeList.appendChild(item);
+            });
+        }
+        
+        // Select and display a challenge
+        function selectChallenge(challengeId) {
+            selectedChallengeId = challengeId;
+            const challenge = challenges.find(c => c.id === challengeId);
+            
+            if (!challenge) return;
+            
+            // Update UI
+            document.getElementById('challenge-title').innerText = challenge.title;
+            document.getElementById('challenge-description').innerText = challenge.description;
+            document.getElementById('input-format').innerText = challenge.input_format;
+            document.getElementById('code-editor').value = '';
+            document.getElementById('test-input').value = '';
+            document.getElementById('result-container').style.display = 'none';
+            
+            // Show challenge details and hide placeholder
+            document.getElementById('challenge-details').style.display = 'block';
+            document.getElementById('no-challenge-selected').style.display = 'none';
+            
+            // Highlight selected challenge in the list
+            const items = document.querySelectorAll('#challenge-list a');
+            items.forEach(item => {
+                item.classList.remove('active');
+                if (item.innerText === challenge.title) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Set default code based on selected language
+            setDefaultCode();
+        }
+        
+        // Set default code template based on selected language
+        function setDefaultCode() {
+            const language = document.getElementById('language-select').value;
+            let defaultCode = '';
+            
+            switch(language) {
+                case 'python':
+                    defaultCode = '# Write your Python solution here\n\n# Example:\ndef solve(input_data):\n    # Parse input\n    # Implement your solution\n    return result\n\n# For testing with custom input\ninput_data = input()\nresult = solve(input_data)\nprint(result)';
+                    break;
+                case 'java':
+                    defaultCode = 'import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        // Read input\n        \n        // Solve the problem\n        \n        // Print output\n        \n        scanner.close();\n    }\n}';
+                    break;
+                case 'cpp':
+                    defaultCode = '#include <iostream>\n#include <vector>\n#include <string>\nusing namespace std;\n\nint main() {\n    // Read input\n    \n    // Solve the problem\n    \n    // Print output\n    \n    return 0;\n}';
+                    break;
+                case 'c':
+                    defaultCode = '#include <stdio.h>\n\nint main() {\n    // Read input\n    \n    // Solve the problem\n    \n    // Print output\n    \n    return 0;\n}';
+                    break;
+                case 'javascript':
+                    defaultCode = '// Read input from standard input\nprocess.stdin.resume();\nprocess.stdin.setEncoding("utf-8");\n\nlet inputString = "";\n\nprocess.stdin.on("data", function (chunk) {\n    inputString += chunk;\n});\n\nprocess.stdin.on("end", function () {\n    // Parse input\n    \n    // Solve the problem\n    \n    // Print output\n    \n});';
+                    break;
+                case 'csharp':
+                    defaultCode = 'using System;\nusing System.Collections.Generic;\n\nclass Program {\n    static void Main(string[] args) {\n        // Read input\n        \n        // Solve the problem\n        \n        // Print output\n        \n    }\n}';
+                    break;
+            }
+            
+            document.getElementById('code-editor').value = defaultCode;
+        }
+        
+        // Update code template when language changes
+        document.getElementById('language-select').addEventListener('change', setDefaultCode);
+        
+        // Submit solution
+        document.getElementById('submit-btn').addEventListener('click', function() {
+            if (!selectedChallengeId) {
+                alert('Please select a challenge first');
+                return;
+            }
+            
+            const code = document.getElementById('code-editor').value.trim();
+            if (!code) {
+                alert('Please write your solution before submitting');
+                return;
+            }
+            
+            const input = document.getElementById('test-input').value;
+            const language = document.getElementById('language-select').value;
+            
+            // Disable submit button and show loading state
+            const submitBtn = document.getElementById('submit-btn');
+            const originalText = submitBtn.innerText;
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Submitting...';
+            
+            // Send submission to server
+            fetch('/submit_code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    challenge_id: selectedChallengeId,
+                    code: code,
+                    input: input,
+                    language: language
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerText = originalText;
+                
+                // Display result
+                displayResult(data);
+            })
+            .catch(error => {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerText = originalText;
+                
+                // Display error
+                const resultContainer = document.getElementById('result-container');
+                const resultOutput = document.getElementById('result-output');
+                
+                resultContainer.style.display = 'block';
+                resultContainer.className = 'result-container result-error';
+                resultOutput.innerText = `Error: ${error.message}`;
+                
+                console.error('Error submitting solution:', error);
+            });
+        });
+        
+        // Display the result from Judge0
+        function displayResult(data) {
+            const resultContainer = document.getElementById('result-container');
+            resultContainer.style.display = 'block';
+            
+            // Set tab content
+            document.getElementById('result-output').innerText = data.output || 'No output';
+            document.getElementById('result-errors').innerText = data.error_output || 'No errors';
+            document.getElementById('result-compilation').innerText = data.compile_output || 'No compilation output';
+            document.getElementById('result-status').innerText = data.status || 'Unknown';
+            document.getElementById('result-time').innerText = data.execution_time || '0 seconds';
+            document.getElementById('result-memory').innerText = data.memory_used || '0 KB';
+            
+            // Set container style based on result
+            if (data.error) {
+                resultContainer.className = 'result-container result-error';
+                document.getElementById('result-output').innerText = `Error: ${data.error}`;
+            } else if (data.is_correct) {
+                resultContainer.className = 'result-container result-success';
+            } else {
+                resultContainer.className = 'result-container result-warning';
+            }
+            
+            // Show the first tab by default
+            const outputTab = document.getElementById('output-tab')
+            const outputTabObj = new bootstrap.Tab(outputTab);
+            outputTabObj.show();
+        }
+
+    // Sidebar toggle functionality
+        document.getElementById('menuBtn').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside of it
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.getElementById('menuBtn');
+            
+            // If click is outside sidebar and menu button, and sidebar is open
+            if (!sidebar.contains(event.target) && 
+                event.target !== menuBtn && 
+                !menuBtn.contains(event.target) && 
+                sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        function logout() {
+        // Add any necessary logout functionality here
+        alert('You have logged out!');
+        window.location.href = "{{ url_for('home') }}";  // Redirect to login page (replace with your actual login page)
+    }
+    </script>
+</body>
+</html>

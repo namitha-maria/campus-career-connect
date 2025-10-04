@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - View Student Progress</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #c7ea46;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 15px;
+        }
+
+        .banner img {
+            height: 90px;
+            cursor: pointer;
+        }
+
+        .menu-btn {
+            position: absolute;
+            left: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .logo.right {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background-color: transparent;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: -250px;
+            width: 250px;
+            height: calc(100% - 60px);
+            background-color: #c7ea46;
+            overflow: hidden;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #000;
+            color: #c7ea46;
+        }
+
+        .content {
+            flex: 1;
+            margin-top: 80px;
+            width: 90%;
+            max-width: 800px;
+            padding: 30px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #222;
+            border-radius: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .btn-primary {
+            background-color: #c7ea46;
+            border: none;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .btn-primary:hover {
+            background-color: #a8c63e;
+        }
+
+        .progress-card {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #c7ea46;
+            background-color: #333;
+            color: #c7ea46;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Banner -->
+    <div class="banner">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <img src="{{ url_for('static', filename='images/8-removebg-preview.png') }}" alt="Campus Career Connect Logo">
+        <button class="logo right" onclick="logout()">
+            <i class="bi bi-box-arrow-right" style="font-size: 1.5rem; color: #000;"></i>
+        </button>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('admin_at') }}">Aptitude Tests</a>
+        <a href="{{ url_for('admin_cc') }}">Coding Challenges</a>
+        <a href="{{ url_for('admin_qna') }}">Q&A Management</a>
+    </div>
+    <!-- Overlay for mobile -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Progress Management -->
+    <div class="content">
+        <h2>Search Student Progress</h2>
+        <div class="form-group">
+            <label for="studentUID">Enter Student UID:</label>
+            <input type="text" id="studentUID" class="form-control" placeholder="Enter Student UID">
+            <button class="btn btn-primary mt-3" onclick="searchProgress()">Search</button>
+        </div>
+
+        <!-- Progress Display -->
+        <div class="mt-4">
+            <h2>Student Progress Details</h2>
+            <div id="student-progress"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Campus Career Connect. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Toggle sidebar
+        document.getElementById('menuBtn').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        });
+
+        // Close sidebar when clicking on overlay
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        });
+
+        function logout() {
+            fetch("{{ url_for('admin_login') }}", { method: "GET" })
+                .then(() => {
+                    alert('You have logged out!');
+                    window.location.href = "{{ url_for('home') }}";
+                });
+        }
+
+        function searchProgress() {
+            let studentUID = document.getElementById('studentUID').value.trim();
+
+            if (!studentUID) {
+                alert("Please enter a valid Student UID.");
+                return;
+            }
+
+            let students = JSON.parse(localStorage.getItem('studentProgress')) || {};
+            let studentData = students[studentUID];
+
+            let progressContainer = document.getElementById('student-progress');
+            progressContainer.innerHTML = '';
+
+            if (studentData) {
+                let progressCard = document.createElement('div');
+                progressCard.classList.add('progress-card');
+                progressCard.innerHTML = `
+                    <h5>Student UID: ${studentUID}</h5>
+                    <p><strong>Mock Interview Score:</strong> ${studentData.mockInterviewScore}</p>
+                    <p><strong>Aptitude Test Score:</strong> ${studentData.aptitudeScore}</p>
+                    <p><strong>Coding Challenge Score:</strong> ${studentData.codingScore}</p>
+                `;
+                progressContainer.appendChild(progressCard);
+            } else {
+                let noDataCard = document.createElement('div');
+                noDataCard.classList.add('progress-card');
+                noDataCard.innerHTML = `<p>No progress found for Student UID: ${studentUID}</p>`;
+                progressContainer.appendChild(noDataCard);
+            }
+        }
+
+        // Example Data for Testing (Remove this in final implementation)
+        document.addEventListener("DOMContentLoaded", function() {
+            // Only set example data if it doesn't already exist
+            if (!localStorage.getItem('studentProgress')) {
+                localStorage.setItem('studentProgress', JSON.stringify({
+                    "12345": { mockInterviewScore: "85%", aptitudeScore: "90%", codingScore: "80%" },
+                    "67890": { mockInterviewScore: "78%", aptitudeScore: "88%", codingScore: "92%" }
+                }));
+            }
+        });
+    </script>
+</body>
+</html>

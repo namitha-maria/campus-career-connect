@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Sign In - Campus Career Connect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url("{{ url_for('static', filename='images/6.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+        }
+
+        .overlay {
+            background: rgba(0, 0, 0, 0.8);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .sign-in-card {
+            background-color: rgba(46, 46, 46, 0.9);
+            color: #fff;
+            border: 1px solid #c7ea46;
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 350px;
+            margin: 100px auto 0;
+            box-shadow: 5px 5px 20px rgba(0, 0, 0, 0.6);
+        }
+
+        .form-label {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #c7ea46;
+            color: #000;
+        }
+
+        .btn-custom {
+            background-color: #c7ea46;
+            color: #000;
+            font-size: 0.9rem;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 20px;
+            transition: transform 0.2s, background-color 0.3s;
+            width: 100%;
+        }
+
+        .btn-custom:hover {
+            background-color: #000;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .register-link {
+            color: #c7ea46;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .register-link:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="overlay"></div>
+    <div class="sign-in-card">
+        <h3 class="text-center mb-4">Student Sign In</h3>
+
+        <form action="{{ url_for('student_login') }}" method="POST">
+            <div class="mb-3">
+                <label for="studentEmail" class="form-label">Email Address</label>
+                <input type="email" class="form-control" name="studentEmail" placeholder="Enter your student email" required>
+            </div>
+            <div class="mb-3">
+                <label for="studentPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" name="studentPassword" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn btn-custom">Sign In</button>
+        </form>
+        
+        <p class="text-center mt-3">
+            New here? <a href="{{ url_for('register') }}" class="register-link">Register as a Student</a>
+        </p>
+    </div>
+</body>
+
+</html>

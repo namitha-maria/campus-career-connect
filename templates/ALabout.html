@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Campus Career Connect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .logo {
+            position: absolute;
+            top: 10px;
+            width: 60px;
+            height: auto;
+        }
+
+        .logo.right {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            width: 40px; /* Resize button width */
+            height: 40px; /* Set button height */
+            border: none;
+            background-color: transparent;
+            padding: 0; /* Remove any padding */
+            cursor: pointer;
+        }
+
+        .logo.right img {
+            width: 30px; /* Image will fill the button width */
+            height: 30px; /* Image will fill the button height */
+            object-fit: contain; /* Ensure the image fits without distortion */
+        }
+
+        .banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #c7ea46;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 15px;
+        }
+
+        .banner img {
+            height: 90px;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: -200px;
+            width: 200px;
+            height: calc(100% - 60px);
+            background-color: #c7ea46;
+            overflow: hidden;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #000;
+            color: #c7ea46;
+        }
+
+        .sidebar .logout-btn {
+            background-color: transparent;
+            color: #fff;
+            font-weight: bold;
+            margin-top: 20px;
+            border: none;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            margin-top: 80px;
+        }
+
+        .menu-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1100;
+            background-color: #c7ea46;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .content h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #c7ea46;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .content p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .about-section {
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        .team-section {
+            margin: 40px auto;
+            max-width: 900px;
+            text-align: center;
+        }
+
+        .team-section img {
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            margin: 20px;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        footer a {
+            color: #c7ea46;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        footer .social-icons i {
+            margin: 0 10px;
+            font-size: 1.5rem;
+            color: #c7ea46;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Banner -->
+    <div class="banner">
+        <img src="{{ url_for('static', filename='images/8-removebg-preview.png') }}" alt="Logo">
+        <!-- Logo on the right wrapped in a button -->
+        <button class="logo right" onclick="logout()">
+            <i class="bi bi-box-arrow-right" style="font-size: 1.5rem; color: #000;"></i> <!-- Bootstrap icon for logout -->
+        </button>
+    </div>
+
+
+    <!-- Menu Button -->
+    <button class="menu-btn" id="menuBtn">&#9776;</button>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+	    <a href="{{ url_for('home3') }}">Home</a>
+        <a href="{{ url_for('alumni_MI') }}">Mock Interview</a>
+        <a href="{{ url_for('alumni_qna') }}">Q&A</a>
+        <a href="{{ url_for('alumni_about') }}">About Us</a>
+    </div>
+
+
+    <!-- Main Content -->
+    <div class="content">
+        <h1>About Us</h1>
+        <div class="about-section">
+            <p>
+                At <strong>Campus Career Connect</strong>, our mission is to bridge the gap between students and their dream careers. 
+                We aim to provide a holistic platform that empowers students to excel in interviews, aptitude tests, and coding challenges. 
+                We are passionate about equipping the next generation of professionals with the tools they need to succeed in the competitive world.
+            </p>
+            <p>
+                Our platform is built with a vision of fostering a supportive community where students can gain confidence, hone their skills, and prepare for their future endeavors.
+            </p>
+        </div>
+
+        <div class="team-section">
+            <h3 style="color:#c7ea46;">Meet Our Team</h3>
+            <img src="{{ url_for('static', filename='images/user.jpg') }}" alt="Team Member 1">
+            <img src="{{ url_for('static', filename='images/user.jpg') }}" alt="Team Member 2">
+            <img src="{{ url_for('static', filename='images/user.jpg') }}" alt="Team Member 3">
+            <p>Our dedicated team of experts and educators is here to guide you every step of the way.</p>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2025 Campus Career Connect. All Rights Reserved.</p>
+        <p>Contact us: <a href="mailto:info@campuscareerconnect.com">info@campuscareerconnect.com</a></p>
+    </footer>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        function logout() {
+            fetch("{{ url_for('alumni_login') }}", { method: "GET" })
+                .then(() => {
+                    alert('You have logged out!');
+                    window.location.href = "{{ url_for('home') }}";
+                });
+        }
+    </script>
+    
+</body>
+
+</html>

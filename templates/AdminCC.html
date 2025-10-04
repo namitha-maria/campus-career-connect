@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Manage Coding Challenges</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background-color: #c7ea46;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 15px;
+        }
+
+        .banner img {
+            height: 90px;
+            cursor: pointer;
+        }
+
+        .menu-btn {
+            position: absolute;
+            left: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #000;
+            cursor: pointer;
+        }
+
+        .logo.right {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background-color: transparent;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: -250px;
+            width: 250px;
+            height: calc(100% - 60px);
+            background-color: #c7ea46;
+            overflow: hidden;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #000;
+            color: #c7ea46;
+        }
+
+        .content {
+            flex: 1;
+            margin-top: 80px;
+            width: 90%;
+            max-width: 800px;
+            padding: 30px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #222;
+            border-radius: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .btn-primary {
+            background-color: #c7ea46;
+            border: none;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .btn-primary:hover {
+            background-color: #a8c63e;
+        }
+
+        .challenge-list {
+            margin-top: 30px;
+        }
+
+        .challenge-card {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background-color: #000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Banner -->
+    <div class="banner">
+        <button class="menu-btn" id="menuBtn">☰</button>
+        <img src="{{ url_for('static', filename='images/8-removebg-preview.png') }}" alt="Campus Career Connect Logo">
+        <button class="logo right" onclick="logout()">
+            <i class="bi bi-box-arrow-right" style="font-size: 1.5rem; color: #000;"></i>
+        </button>
+    </div>
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('admin_at') }}">Aptitude Tests</a>
+        <a href="{{ url_for('admin_cc') }}">Coding Challenges</a>
+        <a href="{{ url_for('admin_qna') }}">Q&A Management</a>
+    </div>
+    <!-- Overlay for mobile -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Challenge Management -->
+    <div class="content">
+        <h2>Add New Coding Challenge</h2>
+        <form id="addChallengeForm">
+            <div class="form-group">
+                <label for="title">Challenge Title:</label>
+                <input type="text" id="title" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" class="form-control" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="inputFormat">Input Format:</label>
+                <textarea id="inputFormat" class="form-control" rows="2" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="expectedOutput">Expected Output (Hidden from Students):</label>
+                <textarea id="expectedOutput" class="form-control" rows="2" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Challenge</button>
+        </form>
+
+        <!-- Challenge List -->
+        <div class="challenge-list">
+            <h2>Existing Coding Challenges</h2>
+            <div id="coding-challenges"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Campus Career Connect. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Toggle sidebar
+        document.getElementById('menuBtn').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        });
+
+        // Close sidebar when clicking on overlay
+        document.getElementById('overlay').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+        });
+
+        function logout() {
+            window.location.href = "{{ url_for('logout') }}";
+        }
+
+        // Load existing challenges when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadChallenges();
+            
+            // Add event listener for the form submission
+            document.getElementById('addChallengeForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addChallenge();
+            });
+        });
+
+        // Function to load existing challenges
+        function loadChallenges() {
+            fetch('/api/coding-challenges')
+                .then(response => response.json())
+                .then(challenges => {
+                    const challengesContainer = document.getElementById('coding-challenges');
+                    challengesContainer.innerHTML = '';
+                    
+                    if (challenges.length === 0) {
+                        challengesContainer.innerHTML = '<p>No challenges available yet.</p>';
+                        return;
+                    }
+                    
+                    challenges.forEach(challenge => {
+                        const challengeCard = document.createElement('div');
+                        challengeCard.className = 'challenge-card';
+                        challengeCard.innerHTML = `
+                            <h3>${challenge.title}</h3>
+                            <p>${challenge.description.substring(0, 100)}${challenge.description.length > 100 ? '...' : ''}</p>
+                            <p><strong>Created:</strong> ${new Date(challenge.created_at).toLocaleDateString()}</p>
+                            <div class="mt-2">
+                                <button class="btn btn-sm btn-danger" onclick="deleteChallenge(${challenge.id})">Delete</button>
+                            </div>
+                        `;
+                        challengesContainer.appendChild(challengeCard);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching challenges:', error);
+                    document.getElementById('coding-challenges').innerHTML = 
+                        '<p>Error loading challenges. Please try again later.</p>';
+                });
+        }
+
+        // Function to add a new challenge
+        function addChallenge() {
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const inputFormat = document.getElementById('inputFormat').value;
+            const expectedOutput = document.getElementById('expectedOutput').value;
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('title', title);
+            formData.append('description', description);
+            formData.append('inputFormat', inputFormat);
+            formData.append('expectedOutput', expectedOutput);
+            
+            // Send POST request to API
+            fetch('/api/coding-challenges', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
+                }
+                alert('Challenge added successfully!');
+                document.getElementById('addChallengeForm').reset();
+                loadChallenges(); // Reload the challenges list
+            })
+            .catch(error => {
+                console.error('Error adding challenge:', error);
+                alert('Error adding challenge. Please try again.');
+            });
+        }
+
+        // Function to delete a challenge
+        function deleteChallenge(challengeId) {
+            if (confirm('Are you sure you want to delete this challenge?')) {
+                fetch(`/api/coding-challenges/${challengeId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                        return;
+                    }
+                    alert('Challenge deleted successfully!');
+                    loadChallenges(); // Reload the challenges list
+                })
+                .catch(error => {
+                    console.error('Error deleting challenge:', error);
+                    alert('Error deleting challenge. Please try again.');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
