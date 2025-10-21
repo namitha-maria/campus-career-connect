@@ -1,192 +1,163 @@
-Campus Career Connect
+# 🎓 Campus Career Connect
 
-A comprehensive platform connecting students with alumni for career guidance.
+A comprehensive platform connecting students with alumni for career guidance and career preparation — including aptitude tests, coding challenges, mock interviews, and a Q&A forum.
 
-🚀 Table of Contents
+---
 
-About
+## 📚 Table of Contents
 
-Features
+- [About](#about)
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+  - [Running the App](#running-the-app)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
-Tech Stack
+---
 
-Getting Started
+## 🧠 About
 
-Prerequisites
+Campus Career Connect is a web application that bridges the gap between students and alumni. It helps students:
 
-Installation
+- Prepare for interviews and placements
+- Take aptitude and coding tests
+- Ask career-related questions to alumni
+- Track progress through a student dashboard
 
-Configuration
+This project is ideal for college career cells or tech communities looking to organize and scale mentorship and skill development.
 
-Running the App
+---
 
-Usage
+## ✨ Features
 
-Project Structure
+- 📝 **Aptitude Tests** – Quantitative, logical, and verbal MCQs
+- 💻 **Coding Challenges** – Practice and evaluation
+- 🎤 **Mock Interviews** – Interview simulations
+- 💬 **Alumni Q&A Forum** – Guidance directly from alumni
+- 📊 **Progress Dashboard** – Visual insights for students
+- 🔐 **Role-Based Access** – Student, Alumni, Admin
+- 🧑‍💼 **Admin Panel** – Manage users, content, and platform
 
-Contributing
+---
 
-License
+## 🛠️ Tech Stack
 
-Contact
+- **Backend:** Python (Flask)
+- **Frontend:** HTML, CSS, JavaScript
+- **Templating Engine:** Jinja2 (Flask templates)
+- **Static Assets:** Stored in `/static`
+- **Version Control:** Git & GitHub
 
-About
+---
 
-Campus Career Connect is designed to bridge the gap between students and alumni by providing a structured way for alumni to share insights, and students to develop skills through tests, challenges and interaction. The goal is to create a unified dashboard where students can:
+## 🚀 Getting Started
 
-take aptitude & coding tests
+### ✅ Prerequisites
 
-attend mock interviews
+- Python 3.x
+- `pip` package manager
+- (Optional) Virtual environment tool (like `venv`)
 
-ask questions to alumni
+### 📦 Installation
 
-track their progress over time
+```bash
+# Clone the repository
+git clone https://github.com/namitha-maria/campus-career-connect.git
+cd campus-career-connect
 
-It’s perfect for educational institutions, career cells and student communities wanting to give structured career‑support.
+# Create virtual environment (recommended)
+python3 -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
-Features
+# Install dependencies
+pip install -r requirements.txt
+```
 
-📝 Aptitude Tests – battery of multiple‑choice questions covering quantitative, logical, verbal reasoning.
+### ⚙️ Configuration
 
-💻 Coding Challenges – tasks for students to solve, evaluate themselves or receive alumni feedback.
+1. Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
 
-🎤 Mock Interviews – students can schedule or take interviews, simulate real‑world experience.
+2. Update the `.env` file with your values (e.g., database URI, secret key)
 
-💬 Alumni Q&A – students post questions, alumni provide answers/advice.
+### ▶️ Running the App
 
-📊 Progress Dashboard – students track their test results, challenge completions, interview readiness.
+```bash
+python app.py
+```
 
-🔐 Role‑based Access – distinct views for Students, Alumni, Admin.
+Then visit: [http://localhost:5000](http://localhost:5000)
 
-📂 Admin Panel – manage users, tests, challenges, content, analytics.
+---
 
-Tech Stack
+## 🧪 Usage
 
-Backend: Python (Flask) – based on app.py.
+- **Students**: Register → Take tests → Attend interviews → Ask questions
+- **Alumni**: Login → View questions → Post responses → Conduct interviews
+- **Admins**: Manage content, users, and analytics from dashboard
 
-Frontend: HTML / CSS / JavaScript (templates folder).
+---
 
-Static Assets: static/images etc.
+## 🗂️ Project Structure
 
-Environment Management: .env for configuration.
+```
+campus-career-connect/
+│
+├── app.py                  # Main Flask application
+├── requirements.txt        # Python dependencies
+├── .env.example            # Environment config sample
+│
+├── templates/              # HTML templates (Jinja2)
+│   └── *.html
+│
+├── static/                 # Static assets (CSS, JS, images)
+│   └── images/
+│
+└── ... (additional modules)
+```
 
-Dependencies: listed in requirements.txt.
+---
 
-Version Control: Git / GitHub.
+## 🤝 Contributing
 
-(Optional future enhancements: DB migrations, API endpoints, React/Vue frontend.)
+Contributions are welcome!
 
-Getting Started
-Prerequisites
+```bash
+# 1. Fork the repo
+# 2. Create a new branch
+git checkout -b feature/your-feature-name
 
-Python 3.x installed on your system.
+# 3. Make changes and commit
+git commit -m "Add your message"
 
-pip (Python package installer) available.
+# 4. Push and open a pull request
+git push origin feature/your-feature-name
+```
 
-Basic understanding of terminal/command‑line.
+Please ensure your changes are clean, tested, and documented.
 
-(Optional) Virtual environment tool recommended.
+---
 
-Installation
+## 📄 License
 
-Clone the repository
+This project is licensed under the **MIT License**.  
+You are free to use, modify, and distribute with attribution.
 
-git clone https://github.com/namitha-maria/campus-career-connect.git  
-cd campus-career-connect  
+---
 
+## 📬 Contact
 
-Create and activate a virtual environment (recommended)
+**Author:** [Namitha Maria](https://github.com/namitha-maria)  
+**GitHub Repo:** [Campus Career Connect](https://github.com/namitha-maria/campus-career-connect)
 
-python3 -m venv venv  
-source venv/bin/activate   # On Windows: venv\Scripts\activate  
+If you find this project useful, give it a ⭐ on GitHub!
 
-
-Install dependencies
-
-pip install -r requirements.txt  
-
-Configuration
-
-Copy the example environment file
-
-cp .env.example .env  
-
-
-Open .env and set your configuration variables (e.g., database URL, secret keys, mail settings, etc.)
-
-(Optionally) Set up a database (e.g., SQLite, PostgreSQL) and update your .env accordingly.
-
-Running the App
-
-With the environment set up, run:
-
-python app.py  
-
-
-Then open your browser and navigate to http://localhost:5000 (or whichever port is configured) to see the app in action.
-
-Usage
-
-Students: Register / login → take tests → complete coding challenges → schedule mock interviews → view progress dashboard.
-
-Alumni: Log in → respond to student questions → optionally schedule interview sessions or host workshops.
-
-Admin: Manage users, content, tests, challenges, monitor usage stats, update site content.
-
-Customization: You can add/edit question banks, challenge sets, interview templates, dashboard widgets as needed.
-
-Project Structure
-campus‑career‑connect/
-│  
-├── app.py                   # Main application entry  
-├── requirements.txt         # Python dependencies  
-├── .env.example             # Sample environment file  
-│  
-├── templates/               # HTML templates  
-│   ├── …  
-│  
-├── static/                  # Static assets (images, CSS, JS)  
-│   └── images/  
-│  
-└── … (other modules, blueprints, assets)  
-
-
-This structure keeps backend logic (app.py), front‑end templates, and static assets separated for clarity and maintainability.
-
-Contributing
-
-We welcome contributions! Please follow these steps:
-
-Fork the repository.
-
-Create a new branch: git checkout -b feature/my‑awesome‑feature.
-
-Make your changes and commit: git commit -m "Add some feature".
-
-Push to your branch: git push origin feature/my‑awesome‑feature.
-
-Open a Pull Request (PR) describing your change.
-
-Please ensure:
-
-Your code is clean and follows existing style.
-
-You test new functionality and it works as expected.
-
-Any new dependencies are documented in requirements.txt.
-
-You update the README if you introduce new user‑facing features.
-
-License
-
-This project is licensed under the MIT License. (You may adapt or replace with your preferred license.)
-
-Contact
-
-For any questions, issues or suggestions:
-
-Author: Namitha Maria (GitHub: namitha‑maria)
-
-Project repository: https://github.com/namitha-maria/campus-career-connect
-
-Feel free to open an issue or discussion for anything related!
